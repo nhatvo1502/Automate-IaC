@@ -27,4 +27,8 @@ jobs:
 
             - name: Terraform destroy
               run: terraform destroy
+            
+            # Delete S3 bucket that contains terraform.tfstate
+            - name: Delete S3 bucket that contains terraform.tfstate
+              run: aws s3api delete-bucket --bucket bucket-4-tfstate-12345
         
