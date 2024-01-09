@@ -28,13 +28,13 @@ jobs:
             # Verify main.tf
             - name: Verify main.tf
               run: cat main.tf
-              
+
             # Execute terraform
             - name: Terraform init
               run: terraform init
 
             - name: Terraform destroy
-              run: terraform destroy
+              run: terraform destroy -auto-approve
             
             # Delete S3 bucket that contains terraform.tfstate
             - name: Delete S3 bucket that contains terraform.tfstate
