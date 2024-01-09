@@ -20,7 +20,15 @@ jobs:
                 echo "aws_access_key_id=${AWS_ACCESS_KEY_ID}" >> ~/.aws/credentials
                 echo "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" >> ~/.aws/credentials
                 echo "region=${AWS_DEFAULT_REGION}" >> ~/.aws/credentials
-
+            
+            # Checkout file to runner
+            - name: Checkout file to runner
+              uses: actions/checkout@v2    
+            
+            # Verify main.tf
+            - name: Verify main.tf
+              run: cat main.tf
+              
             # Execute terraform
             - name: Terraform init
               run: terraform init

@@ -38,3 +38,15 @@ jobs:
             # Verfiy main.tf
             - name: Verify Terraform file
               run: cat main.tf
+            
+            # Terraform init
+            - name: Terraform init
+              run: terraform init
+
+            # Terraform plan
+            - name: Terraform plan
+              run: terraform plan
+            
+            # Terraform apply
+            - name: Terraform apply
+              run: terraform apply -auto-approve
