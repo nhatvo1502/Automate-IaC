@@ -1,0 +1,66 @@
+name: Automate IaC
+on:
+    workflow_dispatch:
+
+jobs:
+    create-resource:
+        runs-on: ubuntu-latest
+        environment: Dev
+
+        steps:
+            # Configure AWS Credential
+            - name: Configure AWS Credential
+              env:
+                AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                AWS_DEFAULT_REGION: 'us-east-1'
+              run: |
+                mkdir -p ~/.aws
+                echo "[default]" > ~/.aws/credentials
+                echo "aws_access_key_id=${AWS_ACCESS_KEY_ID}" >> ~/.aws/credentials
+                echo "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" >> ~/.aws/credentials
+                echo "region=${AWS_DEFAULT_REGION}" >> ~/.aws/credentials
+            
+            - name: Verify AWS Credential
+              run: aws configure list
+            
+            - name: Verify S3 permission
+              run: aws s3 ls
+            
+            # Create S3
+            - name: Create S3 bucket to store terraform.tfstate
+              run: aws s3api create-bucket --bucket bucket-4-tfstate-12345
+
+            # Checkout file to runner
+            - name: Check out file to runner
+              uses: actions/checkout@v2
+            
+            # Verfiy main.tf
+            - name: Verify Terraform file
+              run: cat main.tf
+    
+    destroy-resource:
+        runs-on: ubuntu-latest
+        environment: Dev
+
+        steps:
+            # Configure AWS Credential
+            - name: Configure AWS Credential
+              env:
+                AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                AWS_DEFAULT_REGION: 'us-east-1'
+              run: |
+                mkdir -p ~/.aws
+                echo "[default]" > ~/.aws/credentials
+                echo "aws_access_key_id=${AWS_ACCESS_KEY_ID}" >> ~/.aws/credentials
+                echo "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" >> ~/.aws/credentials
+                echo "region=${AWS_DEFAULT_REGION}" >> ~/.aws/credentials
+                
+            # Execute terraform
+            - name: Terraform init
+              run: terraform init
+
+            - name: Terraform destroy
+              run: terraform destroy
+        
